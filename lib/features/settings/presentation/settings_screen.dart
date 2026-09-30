@@ -64,6 +64,15 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
 
           ListTile(
+            leading: const Icon(Icons.inventory_2_outlined),
+            title: const Text('Products & Services'),
+            subtitle: const Text('Manage your item catalog and pricing'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.products),
+          ),
+          const Divider(),
+
+          ListTile(
             leading: const Icon(Icons.business_outlined),
             title: const Text('Company Profile'),
             subtitle: const Text('Manage company details, logo, and signature'),

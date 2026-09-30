@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../data/invoice_mock_data.dart';
 import '../../models/invoice_item_model.dart';
+import 'product_picker_sheet.dart';
 
 class InvoiceItemCard extends StatelessWidget {
   final int index;
@@ -32,93 +32,13 @@ class InvoiceItemCard extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (bottomSheetContext) => Material(
-        color: AppColors.surfaceLight,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        clipBehavior: Clip.antiAlias,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.65,
-          ),
-          child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.borderLight,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Select Product / Service',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimaryLight,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close_rounded, size: 20),
-                      tooltip: 'Close',
-                      onPressed: () => Navigator.pop(bottomSheetContext),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: MockInvoiceRepository.mockProducts.length,
-                  itemBuilder: (context, pIndex) {
-                    final product = MockInvoiceRepository.mockProducts[pIndex];
-                    final isSelected = product.title == item.description;
-
-                    return ListTile(
-                      title: Text(
-                        product.title,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected
-                              ? AppColors.primary
-                              : AppColors.textPrimaryLight,
-                        ),
-                      ),
-                      trailing: Text(
-                        'AED ${product.unitPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.pop(bottomSheetContext);
-                        onDescriptionChanged(product.title);
-                        onUnitPriceChanged(product.unitPrice);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+      builder: (bottomSheetContext) => ProductPickerSheet(
+        selectedTitle: item.description,
+        onProductSelected: (product) {
+          onDescriptionChanged(product.name);
+          onUnitPriceChanged(product.unitPrice);
+        },
       ),
-    ),
     );
   }
 
@@ -129,26 +49,19 @@ class InvoiceItemCard extends StatelessWidget {
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.borderLight),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(4),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Item #[index + 1] and Delete button
+          // Header: Item # and Delete Button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Item #${index + 1}',
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimaryLight,
                 ),
@@ -157,13 +70,14 @@ class InvoiceItemCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(
                     Icons.delete_outline_rounded,
-                    size: 20,
                     color: AppColors.error,
+                    size: 20,
                   ),
-                  tooltip: 'Remove Item',
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                  tooltip: 'Delete item',
                   onPressed: onDelete,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 ),
             ],
           ),
@@ -174,8 +88,7 @@ class InvoiceItemCard extends StatelessWidget {
             onTap: () => _showProductPicker(context),
             borderRadius: BorderRadius.circular(10),
             child: Container(
-              height: 48,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.backgroundLight,
                 borderRadius: BorderRadius.circular(10),
@@ -250,7 +163,8 @@ class InvoiceItemCard extends StatelessWidget {
                             icon: const Icon(Icons.remove_rounded, size: 18),
                             tooltip: 'Decrease',
                             padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                            constraints:
+                                const BoxConstraints(minWidth: 32, minHeight: 32),
                             visualDensity: VisualDensity.compact,
                             onPressed: item.quantity > 1 ? onDecrement : null,
                           ),
@@ -266,7 +180,8 @@ class InvoiceItemCard extends StatelessWidget {
                             icon: const Icon(Icons.add_rounded, size: 18),
                             tooltip: 'Increase',
                             padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                            constraints:
+                                const BoxConstraints(minWidth: 32, minHeight: 32),
                             visualDensity: VisualDensity.compact,
                             onPressed: onIncrement,
                           ),

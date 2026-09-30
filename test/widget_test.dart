@@ -37,8 +37,12 @@ void main() {
       // Recent invoices section
       expect(find.text('Recent Invoices'), findsOneWidget);
       expect(find.text('View All'), findsOneWidget);
+      await tester.drag(find.byType(ListView), const Offset(0, -300));
+      await tester.pumpAndSettle();
       expect(find.text('INV-001'), findsOneWidget);
       expect(find.text('ZAHURUDDIN'), findsOneWidget);
+      await tester.drag(find.byType(ListView), const Offset(0, 300));
+      await tester.pumpAndSettle();
 
       // Bottom navigation
       expect(find.text('Home'), findsOneWidget);
@@ -56,8 +60,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap Customers navigation destination -> SnackBar
-      await tester.tap(find.text('Customers'));
+      await tester.tap(find.byIcon(Icons.more_horiz_outlined));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Coming soon'), findsOneWidget);
 
       // Tap Invoices navigation destination -> navigates to Invoices
@@ -282,3 +287,5 @@ void main() {
     }
   });
 }
+
+

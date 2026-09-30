@@ -29,6 +29,8 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             // 1. Primary Action Button
             _buildCreateInvoiceButton(context),
+            const SizedBox(height: 10),
+            _buildManageProductsButton(context),
             const SizedBox(height: 20),
 
             // 2. Summary Statistics Section
@@ -70,6 +72,34 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildManageProductsButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 46,
+      child: OutlinedButton.icon(
+        key: const Key('dashboard_products_button'),
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.products);
+        },
+        icon: const Icon(Icons.inventory_2_outlined, size: 18, color: AppColors.primary),
+        label: const Text(
+          'Products & Services Catalog',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.primary,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: AppColors.primary, width: 1.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
